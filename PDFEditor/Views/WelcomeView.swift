@@ -55,7 +55,7 @@ struct WelcomeView: View {
             .padding(.top, 8)
             .padding(.bottom)
             
-            NavigationLink(destination: EditorView(viewModel: .init(url: selectedPDFURL)), isActive: $navigateToEditor) {
+            NavigationLink(destination: EditorView(viewModel: .init()), isActive: $navigateToEditor) {
                 EmptyView()
             }
             .hidden()
@@ -65,15 +65,21 @@ struct WelcomeView: View {
             }
             .hidden()
             
+            NavigationLink(
+                destination:
+                    EditorView(viewModel: .init(url: selectedPDFURL))
+                ,
+                isActive: Binding(
+                    get: { selectedPDFURL != nil },
+                    set: { if !$0 { selectedPDFURL = nil } }
+                )
+            ) { EmptyView() }
+                .hidden()
+            
         }
         .padding()
         .sheet(isPresented: $showDocumentPicker) {
             DocumentPicker(selectedURL: $selectedPDFURL, types: [.pdf])
-        }
-        .onChange(of: selectedPDFURL) { url in
-            if url != nil {
-                navigateToEditor = true
-            }
         }
     }
 }

@@ -34,6 +34,12 @@ class EditorViewModel: ObservableObject {
            let doc = PDFDocument(url: pdfURL) {
             document = doc
         }
+        else if let pdfURL = url,
+                pdfURL.startAccessingSecurityScopedResource(),
+                let doc = PDFDocument(url: pdfURL) {
+            defer { pdfURL.stopAccessingSecurityScopedResource() }
+            document = doc
+        }
         else {
             let pageRect = CGRect(x: 0, y: 0, width: width, height: height)
             let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
